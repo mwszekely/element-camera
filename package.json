@@ -1,0 +1,21 @@
+{
+  "name": "element-camera",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "exports": {
+    "default": "./dist/index.js", 
+    "module": "./dist/index.js", 
+    "types": "./dist/index.d.ts"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "typescript": "^6.0.3"
+  }
+}

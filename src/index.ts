@@ -136,7 +136,7 @@ export class ElementCamera {
             this.parent = element.parentElement as HTMLElement;
 
 
-            
+
             this.parent.addEventListener("pointermove", this.onPointerMove);
             this.parent.addEventListener("pointerdown", this.onPointerDown);
             this.parent.addEventListener("pointerup", this.onPointerUp);
@@ -474,6 +474,10 @@ export class ElementCamera {
          * 
          */
 
+        let scrollHorizBecauseCtrl = e.ctrlKey;
+        let scrollVertBecauseAlt = e.altKey;
+        let scrollZoomBecauseNoKey = !scrollHorizBecauseCtrl && !scrollVertBecauseAlt
+
 
         if (e.deltaMode == e.DOM_DELTA_PIXEL) {
             deltaXDivisor = 20;
@@ -495,32 +499,27 @@ export class ElementCamera {
         let normalizedDeltaY = e.deltaY / deltaYDivisor;
         let normalizedDeltaZ = e.deltaZ / deltaZDivisor;
 
-        if (e.altKey) {
-            normalizedDeltaX = normalizedDeltaY;
-            normalizedDeltaY = 0;
-            if (!e.ctrlKey)
-                normalizedDeltaX *= 8;
-        }
-
-        //this.onPointerMove(e);
-        if (e.ctrlKey && !e.altKey) {
-            // This is (probably) a touchpad pinch-to-zoom gesture.
-            // Wish we could capture these on touchscreens too.......
-            normalizedDeltaY /= 5;
+        if (scrollZoomBecauseNoKey) {
+            normalizedDeltaZ = normalizedDeltaY / 5;
+            normalizedDeltaY = normalizedDeltaX = 0;
             this.scaleRequested = Math.max(1, this.scaleRequested + -normalizedDeltaY);
+            this.recalculate();
         }
-        else {
+        else if (scrollHorizBecauseCtrl) {
+            normalizedDeltaX = normalizedDeltaY * 8;
+            normalizedDeltaY = 0;
             if (normalizedDeltaX != 0) {
                 this.panDeltaX = normalizedDeltaX;
                 this.recalculate();
             }
-            else if (normalizedDeltaY != 0) {
+        }
+        else if (scrollVertBecauseAlt) {
+            normalizedDeltaY = normalizedDeltaZ = 0;
+            if (normalizedDeltaY != 0) {
                 this.panDeltaY = normalizedDeltaY;
                 this.recalculate();
             }
-            //  this.scaleRequested = Math.max(1, this.scaleRequested + -(e.deltaY / 100))
         }
-        this.recalculate();
     }
 
     private recalculationScheduled = false;

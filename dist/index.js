@@ -81,6 +81,10 @@ export class ElementCamera {
         this.step = initialStep;
         try {
             document.addEventListener("pointerlockchange", this._onPointerLockChange);
+            element.addEventListener("pointermove", this.onPointerMove);
+            element.addEventListener("pointerdown", this.onPointerDown);
+            element.addEventListener("pointerup", this.onPointerUp);
+            element.addEventListener("wheel", this.zoomWithWheel);
             // TODO: REMOVE THIS
             window.addEventListener("resize", () => {
                 let newScale = roundByDevicePixels(Math.max(1, (this.parent.offsetHeight / this.elementBaseHeight)), this.step, Math.floor);
@@ -130,7 +134,13 @@ export class ElementCamera {
     _onPointerLockChange = (e) => {
         this.pointerIsLocked = (document.pointerLockElement != null);
     };
-    [Symbol.dispose]() { document.removeEventListener("pointerlockchange", this._onPointerLockChange); }
+    [Symbol.dispose]() {
+        document.removeEventListener("pointerlockchange", this._onPointerLockChange);
+        this.element.removeEventListener("pointermove", this.onPointerMove);
+        this.element.removeEventListener("pointerdown", this.onPointerDown);
+        this.element.removeEventListener("pointerup", this.onPointerUp);
+        this.element.removeEventListener("wheel", this.zoomWithWheel);
+    }
     /**
      * Used to determine if click events are allowed to run
      * after pointerup (i.e. if we move or zoom, there's

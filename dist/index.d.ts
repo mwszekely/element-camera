@@ -138,10 +138,10 @@ export declare class ElementCamera {
      */
     private pinchZoomStuff;
     private _firstMoveAfterPointerLockThatShouldBeIgnored;
-    onPointerDown(e: PointerEvent): void;
+    private onPointerDown;
     _debug(): void;
-    onPointerUp(e: PointerEvent): void;
-    onPointerMove(e: PointerEvent): void;
+    private onPointerUp;
+    private onPointerMove;
     zoomWithWheel(e: WheelEvent): void;
     private recalculationScheduled;
     recalculate(): void;

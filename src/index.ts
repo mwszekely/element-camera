@@ -122,6 +122,11 @@ export class ElementCamera {
         try {
             document.addEventListener("pointerlockchange", this._onPointerLockChange);
 
+            element.addEventListener("pointermove", this.onPointerMove);
+            element.addEventListener("pointerdown", this.onPointerDown);
+            element.addEventListener("pointerup", this.onPointerUp);
+            element.addEventListener("wheel", this.zoomWithWheel);
+
 
             // TODO: REMOVE THIS
             window.addEventListener("resize", () => {
@@ -183,7 +188,13 @@ export class ElementCamera {
         this.pointerIsLocked = (document.pointerLockElement != null);
     }
 
-    [Symbol.dispose]() { document.removeEventListener("pointerlockchange", this._onPointerLockChange); }
+    [Symbol.dispose]() {
+        document.removeEventListener("pointerlockchange", this._onPointerLockChange);
+        this.element.removeEventListener("pointermove", this.onPointerMove);
+        this.element.removeEventListener("pointerdown", this.onPointerDown);
+        this.element.removeEventListener("pointerup", this.onPointerUp);
+        this.element.removeEventListener("wheel", this.zoomWithWheel);
+    }
 
     /**
      * Used to determine if click events are allowed to run
@@ -222,7 +233,7 @@ export class ElementCamera {
 
     private _firstMoveAfterPointerLockThatShouldBeIgnored = false;
 
-    onPointerDown(e: PointerEvent) {
+    private onPointerDown(e: PointerEvent) {
         this.pannedOrZoomedDuringPointerDown = false;
         if (e.button == 0 && e.pointerType != 'touch') {
             this.onClick?.(e, this.focusXPixel, this.focusYPixel);
@@ -264,8 +275,8 @@ export class ElementCamera {
 
         }
 
-            this.pointerLastX = e.x;
-            this.pointerLastY = e.y;
+        this.pointerLastX = e.x;
+        this.pointerLastY = e.y;
 
         const prevFocus = [this.focusXP, this.focusYP] as const;
         this.focusXP = (this.pointerLastX - this.lastCommittedState.transformX) / this.lastCommittedState.scaleUsed / this.elementBaseWidth;
@@ -284,7 +295,7 @@ export class ElementCamera {
             element.innerHTML = `SX: ${[...this.pointerData.values()][0]?.startX?.toString() ?? "-"}<br>SY: ${[...this.pointerData.values()][0]?.startY?.toString() ?? "-"}<br>CX: ${[...this.pointerData.values()][0]?.currentX?.toString() ?? "-"}<br>CY: ${[...this.pointerData.values()][0]?.currentY?.toString() ?? "-"}<br>PX: ${this.panDeltaX?.toString() ?? "-"}<br>PY: ${this.panDeltaY?.toString() ?? "-"}`
     }
 
-    onPointerUp(e: PointerEvent) {
+    private onPointerUp(e: PointerEvent) {
 
         if (this.pointerData.size > 0) {
             let didSomethingThatJustifiesCancellingTheEvent = false;
@@ -315,13 +326,13 @@ export class ElementCamera {
             this.usePointerLock = false;
 
 
-        const prevFocus = [this.focusXP, this.focusYP] as const;
-        this.focusXP = (this.pointerLastX - this.lastCommittedState.transformX) / this.lastCommittedState.scaleUsed / this.elementBaseWidth;
-        this.focusYP = (this.pointerLastY - this.lastCommittedState.transformY) / this.lastCommittedState.scaleUsed / this.elementBaseHeight;
-        this.onFocusChange?.(e, this.focusXPixel, this.focusYPixel);
-        if (this.ignoreMouseFocus) {
-            [this.focusXP, this.focusYP] = [...prevFocus]
-        }
+            const prevFocus = [this.focusXP, this.focusYP] as const;
+            this.focusXP = (this.pointerLastX - this.lastCommittedState.transformX) / this.lastCommittedState.scaleUsed / this.elementBaseWidth;
+            this.focusYP = (this.pointerLastY - this.lastCommittedState.transformY) / this.lastCommittedState.scaleUsed / this.elementBaseHeight;
+            this.onFocusChange?.(e, this.focusXPixel, this.focusYPixel);
+            if (this.ignoreMouseFocus) {
+                [this.focusXP, this.focusYP] = [...prevFocus]
+            }
 
 
             if (didSomethingThatJustifiesCancellingTheEvent) {
@@ -331,7 +342,7 @@ export class ElementCamera {
         }
     }
 
-    onPointerMove(e: PointerEvent) {
+    private onPointerMove(e: PointerEvent) {
 
         if (this.pointerAction == 'pending') {
             if (this.pointerData.size == 1) {

@@ -138,6 +138,7 @@ export declare class ElementCamera {
      */
     private pinchZoomStuff;
     private _firstMoveAfterPointerLockThatShouldBeIgnored;
+    private onContextMenu;
     private onPointerDown;
     _debug(): void;
     private onPointerUp;

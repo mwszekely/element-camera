@@ -81,10 +81,6 @@ export class ElementCamera {
         this.step = initialStep;
         try {
             document.addEventListener("pointerlockchange", this._onPointerLockChange);
-            element.addEventListener("pointermove", this.onPointerMove);
-            element.addEventListener("pointerdown", this.onPointerDown);
-            element.addEventListener("pointerup", this.onPointerUp);
-            element.addEventListener("wheel", this.zoomWithWheel);
             // TODO: REMOVE THIS
             window.addEventListener("resize", () => {
                 let newScale = roundByDevicePixels(Math.max(1, (this.parent.offsetHeight / this.elementBaseHeight)), this.step, Math.floor);
@@ -94,6 +90,11 @@ export class ElementCamera {
                 }
             });
             this.parent = element.parentElement;
+            this.parent.addEventListener("pointermove", this.onPointerMove);
+            this.parent.addEventListener("pointerdown", this.onPointerDown);
+            this.parent.addEventListener("pointerup", this.onPointerUp);
+            this.parent.addEventListener("wheel", this.zoomWithWheel);
+            this.parent.addEventListener("contextmenu", this.onContextMenu);
             this.elementBaseWidth = this.element.offsetWidth;
             this.elementBaseHeight = this.element.offsetHeight;
             let initialScale = roundByDevicePixels(Math.max(1, (this.parent.offsetHeight / this.elementBaseHeight)), this.step, Math.floor);
@@ -136,10 +137,11 @@ export class ElementCamera {
     };
     [Symbol.dispose]() {
         document.removeEventListener("pointerlockchange", this._onPointerLockChange);
-        this.element.removeEventListener("pointermove", this.onPointerMove);
-        this.element.removeEventListener("pointerdown", this.onPointerDown);
-        this.element.removeEventListener("pointerup", this.onPointerUp);
-        this.element.removeEventListener("wheel", this.zoomWithWheel);
+        this.parent.removeEventListener("pointermove", this.onPointerMove);
+        this.parent.removeEventListener("pointerdown", this.onPointerDown);
+        this.parent.removeEventListener("pointerup", this.onPointerUp);
+        this.parent.removeEventListener("wheel", this.zoomWithWheel);
+        this.parent.removeEventListener("wheel", this.onContextMenu);
     }
     /**
      * Used to determine if click events are allowed to run
@@ -173,6 +175,10 @@ export class ElementCamera {
      */
     pinchZoomStuff = { centerX: 0, centerY: 0, initialDistance: 0, currentDistance: 0, initialScaleRequested: 1 };
     _firstMoveAfterPointerLockThatShouldBeIgnored = false;
+    onContextMenu = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
     onPointerDown = (e) => {
         this.pannedOrZoomedDuringPointerDown = false;
         if (e.button == 0 && e.pointerType != 'touch') {

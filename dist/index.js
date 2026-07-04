@@ -388,7 +388,7 @@ export class ElementCamera {
         if (scrollZoomBecauseNoKey) {
             normalizedDeltaZ = normalizedDeltaY / 5;
             normalizedDeltaY = normalizedDeltaX = 0;
-            this.scaleRequested = Math.max(1, this.scaleRequested + -normalizedDeltaY);
+            this.scaleRequested = Math.max(1, this.scaleRequested + -normalizedDeltaZ);
             this.recalculate();
         }
         else if (scrollHorizBecauseCtrl) {
@@ -400,7 +400,7 @@ export class ElementCamera {
             }
         }
         else if (scrollVertBecauseAlt) {
-            normalizedDeltaY = normalizedDeltaZ = 0;
+            normalizedDeltaX = normalizedDeltaZ = 0;
             if (normalizedDeltaY != 0) {
                 this.panDeltaY = normalizedDeltaY;
                 this.recalculate();

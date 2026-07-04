@@ -279,7 +279,9 @@ export class ElementCamera {
     }
 
     _debug() {
-        document.getElementById("debug-info")!.innerHTML = `SX: ${[...this.pointerData.values()][0]?.startX?.toString() ?? "-"}<br>SY: ${[...this.pointerData.values()][0]?.startY?.toString() ?? "-"}<br>CX: ${[...this.pointerData.values()][0]?.currentX?.toString() ?? "-"}<br>CY: ${[...this.pointerData.values()][0]?.currentY?.toString() ?? "-"}<br>PX: ${this.panDeltaX?.toString() ?? "-"}<br>PY: ${this.panDeltaY?.toString() ?? "-"}`
+        let element = document.getElementById("element-camera-debug-info");
+        if (element)
+            element.innerHTML = `SX: ${[...this.pointerData.values()][0]?.startX?.toString() ?? "-"}<br>SY: ${[...this.pointerData.values()][0]?.startY?.toString() ?? "-"}<br>CX: ${[...this.pointerData.values()][0]?.currentX?.toString() ?? "-"}<br>CY: ${[...this.pointerData.values()][0]?.currentY?.toString() ?? "-"}<br>PX: ${this.panDeltaX?.toString() ?? "-"}<br>PY: ${this.panDeltaY?.toString() ?? "-"}`
     }
 
     onPointerUp(e: PointerEvent) {

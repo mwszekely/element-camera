@@ -173,7 +173,7 @@ export class ElementCamera {
      */
     pinchZoomStuff = { centerX: 0, centerY: 0, initialDistance: 0, currentDistance: 0, initialScaleRequested: 1 };
     _firstMoveAfterPointerLockThatShouldBeIgnored = false;
-    onPointerDown(e) {
+    onPointerDown = (e) => {
         this.pannedOrZoomedDuringPointerDown = false;
         if (e.button == 0 && e.pointerType != 'touch') {
             this.onClick?.(e, this.focusXPixel, this.focusYPixel);
@@ -218,13 +218,13 @@ export class ElementCamera {
             [this.focusXP, this.focusYP] = [...prevFocus];
         }
         this._debug();
-    }
+    };
     _debug() {
         let element = document.getElementById("element-camera-debug-info");
         if (element)
             element.innerHTML = `SX: ${[...this.pointerData.values()][0]?.startX?.toString() ?? "-"}<br>SY: ${[...this.pointerData.values()][0]?.startY?.toString() ?? "-"}<br>CX: ${[...this.pointerData.values()][0]?.currentX?.toString() ?? "-"}<br>CY: ${[...this.pointerData.values()][0]?.currentY?.toString() ?? "-"}<br>PX: ${this.panDeltaX?.toString() ?? "-"}<br>PY: ${this.panDeltaY?.toString() ?? "-"}`;
     }
-    onPointerUp(e) {
+    onPointerUp = (e) => {
         if (this.pointerData.size > 0) {
             let didSomethingThatJustifiesCancellingTheEvent = false;
             if (this.pointerAction != null)
@@ -258,8 +258,8 @@ export class ElementCamera {
                 e.stopPropagation();
             }
         }
-    }
-    onPointerMove(e) {
+    };
+    onPointerMove = (e) => {
         if (this.pointerAction == 'pending') {
             if (this.pointerData.size == 1) {
                 this.pointerAction = 'pan';
@@ -333,8 +333,8 @@ export class ElementCamera {
             this._debug();
             this.recalculate();
         }
-    }
-    zoomWithWheel(e) {
+    };
+    zoomWithWheel = (e) => {
         e.preventDefault();
         this.pointerLastX = e.x;
         this.pointerLastY = e.y;
@@ -401,7 +401,7 @@ export class ElementCamera {
             //  this.scaleRequested = Math.max(1, this.scaleRequested + -(e.deltaY / 100))
         }
         this.recalculate();
-    }
+    };
     recalculationScheduled = false;
     recalculate() {
         this._recalculateImpl();

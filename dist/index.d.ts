@@ -142,7 +142,7 @@ export declare class ElementCamera {
     _debug(): void;
     private onPointerUp;
     private onPointerMove;
-    zoomWithWheel(e: WheelEvent): void;
+    zoomWithWheel: (e: WheelEvent) => void;
     private recalculationScheduled;
     recalculate(): void;
     private _recalculateImpl;

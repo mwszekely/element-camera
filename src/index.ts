@@ -233,7 +233,7 @@ export class ElementCamera {
 
     private _firstMoveAfterPointerLockThatShouldBeIgnored = false;
 
-    private onPointerDown(e: PointerEvent) {
+    private onPointerDown = (e: PointerEvent) => {
         this.pannedOrZoomedDuringPointerDown = false;
         if (e.button == 0 && e.pointerType != 'touch') {
             this.onClick?.(e, this.focusXPixel, this.focusYPixel);
@@ -295,7 +295,7 @@ export class ElementCamera {
             element.innerHTML = `SX: ${[...this.pointerData.values()][0]?.startX?.toString() ?? "-"}<br>SY: ${[...this.pointerData.values()][0]?.startY?.toString() ?? "-"}<br>CX: ${[...this.pointerData.values()][0]?.currentX?.toString() ?? "-"}<br>CY: ${[...this.pointerData.values()][0]?.currentY?.toString() ?? "-"}<br>PX: ${this.panDeltaX?.toString() ?? "-"}<br>PY: ${this.panDeltaY?.toString() ?? "-"}`
     }
 
-    private onPointerUp(e: PointerEvent) {
+    private onPointerUp = (e: PointerEvent) => {
 
         if (this.pointerData.size > 0) {
             let didSomethingThatJustifiesCancellingTheEvent = false;
@@ -342,7 +342,7 @@ export class ElementCamera {
         }
     }
 
-    private onPointerMove(e: PointerEvent) {
+    private onPointerMove = (e: PointerEvent) => {
 
         if (this.pointerAction == 'pending') {
             if (this.pointerData.size == 1) {
@@ -436,7 +436,7 @@ export class ElementCamera {
 
     }
 
-    zoomWithWheel(e: WheelEvent) {
+    zoomWithWheel = (e: WheelEvent) => {
         e.preventDefault();
         this.pointerLastX = e.x;
         this.pointerLastY = e.y;
